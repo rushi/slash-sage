@@ -1,0 +1,14 @@
+<?php
+return [
+    'settings' => [
+        'displayErrorDetails' => true, // For dev environment
+        'slack' => [
+            'allowed_users' => ['user1', 'user2'],
+            'token' => 'SLACK_TOKEN'
+        ],
+        'guzzle' => [
+            'base_uri' => 'http://gocd.xola.com/go/api/',
+            'auth' => ['gcd_username', 'gocd_password']
+        ]
+    ]
+];

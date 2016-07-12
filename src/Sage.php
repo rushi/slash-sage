@@ -1,4 +1,5 @@
 <?php
+use GuzzleHttp\Exception\RequestException;
 
 class Sage
 {
@@ -58,13 +59,19 @@ class Sage
 
     public function getPipelineInfo($pipelineName)
     {
-        // $pipelineName = $this->checkPipelineName($pipelineName);
-
         try {
             $response = $this->guzzle->get("pipelines/$pipelineName/history");
             $statusCode = $response->getStatusCode();
             $this->logger->info("Pipelines API call", ['pipeline' => $pipelineName, 'status' => $statusCode]);
-        } catch (Exception $e) {
+        } catch (RequestException $re) {
+            $response = $re->getResponse();
+            if ($response->getStatusCode() == 404) {
+                return ["text" => "Pipline $pipelineName not found"];
+            }
+
+            return ["text" => $re->getMessage()];
+        }
+        catch (Exception $e) {
             return ["text" => $e->getMessage()];
         }
 
@@ -106,17 +113,8 @@ class Sage
         return $payload;
     }
 
-    private function checkPipelineName($pipeline)
+    public function searchPipeline($pipeline)
     {
-        if (preg_match("/master/i", $pipeline)) {
-            return $pipeline;
-        }
-
-        if (preg_match("/^(XOL|CS)\-\d{1,}\.\w+.*$/i", $pipeline)) {
-            // Matches Xola's pipeline format, no need to look for it further
-            return $pipeline;
-        }
-
         // Find closest matching pipeline from the dashboard
         try {
             $response = $this->guzzle->get('dashboard', ['headers' => ['Accept' => 'application/vnd.go.cd.v1+json']]);

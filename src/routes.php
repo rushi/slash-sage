@@ -29,16 +29,16 @@ $app->post('/slack', function (Request $request, Response $response) use ($sage)
     }
 
     $sage->setUser($params['user_name']);
-    $args = explode(" ", strtolower(trim($params['text'])));
+    $args = explode(" ", trim($params['text']));
     $inChannel = false;
-    if ($args[count($args)-1] == "pub") {
+    if (strtolower($args[count($args)-1]) == "pub") {
         // last argument is 'pub' which means output should go in channel.
         array_pop($args); // remove that last arg, we don't need it anymore
         $inChannel = true;
     }
 
     $body = [];
-    switch ($args[0]) {
+    switch (strtolower($args[0])) {
         case 'agent':
         case 'agents':
             $agentName = null;
@@ -60,8 +60,8 @@ $app->post('/slack', function (Request $request, Response $response) use ($sage)
         case 'help':
         default:
             $commands = [
-                "`/ci agents (optional_agent_name)` List all agents & their status",
-                "`/ci status (required_pipeline_name)` List build status"
+                "• `" . $params['command'] . " agents (optional_agent_name)` List all agent(s) & their status",
+                "• `" . $params['command'] . " status (required_pipeline_name)` List build status"
             ];
             $body = ["text" => "Available commands are:\n" . implode("\n", $commands)];
             break;
