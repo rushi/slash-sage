@@ -1,0 +1,16 @@
+{
+    "name": "rushi/slash-sage",
+    "description": "Slash command that returns details of a Go pipeline",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rushi Vishavadia",
+            "email": "rushi@xola.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "^3.0",
+        "monolog/monolog": "^1.20",
+        "guzzlehttp/guzzle": "~6.0"
+    }
+}
