@@ -66,7 +66,7 @@ class Sage
         } catch (RequestException $re) {
             $response = $re->getResponse();
             if ($response->getStatusCode() == 404) {
-                return ["text" => "Pipline $pipelineName not found"];
+                return ["text" => "Pipeline $pipelineName not found"];
             }
 
             return ["text" => $re->getMessage()];
@@ -113,27 +113,28 @@ class Sage
         return $payload;
     }
 
-    public function searchPipeline($pipeline)
+    public function searchPipeline($search)
     {
+        $search = trim($search);
+
         // Find closest matching pipeline from the dashboard
         try {
             $response = $this->guzzle->get('dashboard', ['headers' => ['Accept' => 'application/vnd.go.cd.v1+json']]);
             $statusCode = $response->getStatusCode();
-            $this->logger->info("Dashboard API call", ['pipeline' => $pipeline, 'status' => $statusCode]);
+            $this->logger->info("Dashboard API call", ['search' => $search, 'status' => $statusCode]);
 
             $content = json_decode($response->getBody(), true);
             foreach ($content["_embedded"]["pipeline_groups"] as $pipelineGroups) {
                 foreach ($pipelineGroups["_embedded"]["pipelines"] as $_pipeline) {
-                    if (isset($_pipeline["name"]) && preg_match("/$pipeline/i", $_pipeline["name"])) {
+                    if (isset($_pipeline["name"]) && preg_match("/$search/i", $_pipeline["name"])) {
                         return $_pipeline["name"];
                     }
                 }
             }
         } catch (Exception $e) {
-            $this->logger->warn("Error while searching for pipeline", ["pipeline" => $pipeline, "exception" => $e->getMessage()]);
-            return $pipeline;
+            $this->logger->warn("Error while searching for pipeline", ["search" => $search, "exception" => $e->getMessage()]);
         }
 
-        return $pipeline;
+        return null;
     }
 }

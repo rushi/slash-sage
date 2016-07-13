@@ -10,6 +10,7 @@ The current supported commands are:
 
 * `/sage agents` Output a list of all configured agents and basic information like name, operating system and disk space.
 * `/sage status <pipeline>` Show the success or failure state of all stages and jobs within this pipeline
+* `/sage search <string>` Search the dashboard for any pipeline matching this regex and show build status
 
 ### Installation
 

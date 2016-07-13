@@ -57,11 +57,24 @@ $app->post('/slack', function (Request $request, Response $response) use ($sage)
             }
             break;
 
+        case 'search':
+            if (isset($args[1])) {
+                $pipeline = $sage->searchPipeline($args[1]);
+                if (!is_null($pipeline)) {
+                    $body = $sage->getPipelineInfo($pipeline);
+                } else {
+                    $body = ['text' => 'No pipeline found for ' . $args[1]];
+                }
+            } else {
+                $body = ["text" => "Search string required"];
+            }
+            break;
         case 'help':
         default:
             $commands = [
                 "• `" . $params['command'] . " agents (optional_agent_name)` List all agent(s) & their status",
-                "• `" . $params['command'] . " status (required_pipeline_name)` List build status"
+                "• `" . $params['command'] . " status (required_pipeline_name)` Show build status for this pipeline",
+                "• `" . $params['command'] . " search (required_search_re)` Search for pipeline using regex and show build status"
             ];
             $body = ["text" => "Available commands are:\n" . implode("\n", $commands)];
             break;
