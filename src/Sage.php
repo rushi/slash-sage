@@ -5,17 +5,11 @@ class Sage
 {
     private $guzzle;
     private $logger;
-    private $user;
 
     public function __construct(GuzzleHttp\Client $guzzle, Psr\Log\LoggerInterface $logger)
     {
         $this->guzzle = $guzzle;
         $this->logger = $logger;
-    }
-
-    public function setUser($user)
-    {
-        $this->user = $user;
     }
 
     public function getAgents($agentName = null)
